@@ -73,7 +73,9 @@ const NavBar = () => {
           <ul className="menu menu-horizontal px-1">{navLinks}</ul>
         </div>
         <div className="navbar-end">
-          <a className="btn">Button</a>
+          <button className="btn bg-[#03C755] text-black border-[#e5e5e5] rounded-lg">
+            Login
+          </button>
         </div>
       </div>
     </div>
