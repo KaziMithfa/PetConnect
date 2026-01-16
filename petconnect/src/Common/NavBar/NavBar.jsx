@@ -34,7 +34,7 @@ const NavBar = () => {
   );
 
   return (
-    <div className="md: mt-4">
+    <div className=" fixed top-0 left-0 right-0 z-50 ">
       <div className="navbar bg-base-100 ">
         <div className="navbar-start">
           <div className="dropdown">
@@ -73,9 +73,12 @@ const NavBar = () => {
           <ul className="menu menu-horizontal px-1">{navLinks}</ul>
         </div>
         <div className="navbar-end">
-          <button className="btn bg-[#03C755] text-black border-[#e5e5e5] rounded-lg">
+          <Link
+            to="/login"
+            className="btn bg-[#03C755] text-black border-[#e5e5e5] rounded-lg"
+          >
             Login
-          </button>
+          </Link>
         </div>
       </div>
     </div>
