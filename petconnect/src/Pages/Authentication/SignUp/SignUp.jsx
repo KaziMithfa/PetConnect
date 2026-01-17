@@ -1,12 +1,12 @@
 import React from "react";
 
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
 
@@ -14,7 +14,7 @@ const SignUp = () => {
     console.log(data);
   };
 
-  console.log(watch("example")); // watch input value by passing the name of it
+  //console.log(watch("example")); // watch input value by passing the name of it
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-orange-50 px-4">
@@ -29,7 +29,7 @@ const SignUp = () => {
 
         {/* Form */}
         <div className="p-8">
-          <form className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {/* Full Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -38,10 +38,15 @@ const SignUp = () => {
               <input
                 type="text"
                 name="name"
+                {...register("name", { required: true })}
                 placeholder="John Doe"
-                required
                 className="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
               />
+              {errors.name && (
+                <span className="mt-1 block text-sm text-red-500 font-medium">
+                  Name is required
+                </span>
+              )}
             </div>
 
             {/* Profile Image */}
@@ -52,9 +57,16 @@ const SignUp = () => {
               <input
                 type="text"
                 name="image"
+                {...register("image", { required: true })}
                 placeholder="https://example.com/photo.jpg"
                 className="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
               />
+
+              {errors.image && (
+                <span className="mt-1 block text-sm text-red-500 font-medium">
+                  Image is required
+                </span>
+              )}
             </div>
 
             {/* Email */}
@@ -66,9 +78,15 @@ const SignUp = () => {
                 type="email"
                 name="email"
                 placeholder="you@email.com"
-                required
+                {...register("email", { required: true })}
                 className="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
               />
+
+              {errors.email && (
+                <span className="mt-1 block text-sm text-red-500 font-medium">
+                  Email is required
+                </span>
+              )}
             </div>
 
             {/* Password */}
@@ -80,9 +98,19 @@ const SignUp = () => {
                 type="password"
                 name="password"
                 placeholder="At least 6 characters"
-                required
+                {...register("password", {
+                  required: true,
+                  minLength: 8,
+                  maxLength: 20,
+                })}
                 className="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
               />
+
+              {errors.password?.type === "required" && (
+                <span className="mt-1 block text-sm text-red-500 font-medium">
+                  Password is required
+                </span>
+              )}
             </div>
 
             {/* Sign Up Button */}
@@ -97,9 +125,12 @@ const SignUp = () => {
           {/* Footer Text */}
           <p className="mt-6 text-center text-sm text-gray-600">
             Already have an account?{" "}
-            <span className="text-green-500 font-semibold cursor-pointer hover:underline">
+            <Link
+              to="/login"
+              className="text-green-500 font-semibold cursor-pointer hover:underline"
+            >
               Please sign in
-            </span>
+            </Link>
           </p>
         </div>
       </div>
