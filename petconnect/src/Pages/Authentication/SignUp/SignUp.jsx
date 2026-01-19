@@ -3,10 +3,10 @@ import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../providers/AuthProvider";
-import { Helmet } from "react-helmet-async";
+import toast from "react-hot-toast";
 
 const SignUp = () => {
-  const { createUser, updateProfile } = useContext(AuthContext);
+  const { createUser, updateUserProfile } = useContext(AuthContext);
   const [error, setError] = useState("");
 
   const {
@@ -20,13 +20,14 @@ const SignUp = () => {
       .then((result) => {
         const user = result?.user;
 
-        updateProfile(data?.name, data?.image)
+        updateUserProfile(data?.name, data?.image)
           .then(() => {
-            console.log("Account created Successfully");
+            toast.success("Account created Successfully");
           })
           .catch((error) => {
             // An error occured
-            console.log(error);
+            toast.error("Profile updated fail");
+            console.log(error?.message);
           });
       })
       .catch((error) => {
@@ -39,10 +40,6 @@ const SignUp = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Sign Up</title>
-      </Helmet>
-
       <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-orange-50 px-4">
         <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Header */}

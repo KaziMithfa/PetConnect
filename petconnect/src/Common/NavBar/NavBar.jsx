@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../providers/AuthProvider";
+import { useContext } from "react";
 
 const NavBar = () => {
+  const { user, logOut } = useContext(AuthContext);
   const navLinks = (
     <>
       <li>
@@ -72,13 +75,43 @@ const NavBar = () => {
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">{navLinks}</ul>
         </div>
-        <div className="navbar-end">
-          <Link
-            to="/login"
-            className="btn bg-[#03C755] text-black border-[#e5e5e5] rounded-lg"
-          >
-            Login
-          </Link>
+        <div className="navbar-end pr-5">
+          {user ? (
+            <div className="dropdown dropdown-end">
+              {/* <div tabIndex={0} role="button" className="btn m-1">
+                Click ⬇️
+              </div> */}
+
+              <div
+                tabIndex={0}
+                role="button"
+                className="avatar btn btn-ghost btn-circle "
+              >
+                <div className="w-10 rounded-full">
+                  <img src="user?.displayName" />
+                </div>
+              </div>
+
+              <ul
+                tabIndex="-1"
+                className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+              >
+                <li>
+                  <Link>DashBoard</Link>
+                </li>
+                <li>
+                  <button onClick={logOut}>Logout</button>
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="btn bg-[#03C755] text-black border-[#e5e5e5] rounded-lg"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </div>

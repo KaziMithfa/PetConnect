@@ -1,17 +1,16 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import toast from "react-hot-toast";
 
 const Login = () => {
-  const { signIn } = useContext(AuthContext);
+  const { signIn, signInwithGoogle } = useContext(AuthContext);
   const [error, setError] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
     const form = e.target;
-    const name = form.name.value;
-    const image = form.image.value;
+
     const email = form.email.value;
     const pass = form.password.value;
 
@@ -26,11 +25,22 @@ const Login = () => {
       });
   };
 
+  // function for handling google sign In
+  const handleGoogleSignIn = () => {
+    signInwithGoogle()
+      .then((result) => {
+        toast.success("You have logged in successfully");
+        console.log(result?.user);
+      })
+      .catch((error) => {
+        console.error(error?.message);
+      });
+  };
+
+  // function for handling Github sign in
+
   return (
     <>
-      <Helmet>
-        <title> Login</title>
-      </Helmet>
       <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-orange-50 px-4">
         <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Header */}
@@ -44,8 +54,7 @@ const Login = () => {
           {/* Form */}
           <div className="p-8">
             <form onSubmit={handleLogin} className="space-y-5">
-              {/* Full Name */}
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Full Name
                 </label>
@@ -55,10 +64,9 @@ const Login = () => {
                   placeholder="John Doe"
                   className="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
                 />
-              </div>
+              </div> */}
 
-              {/* Image URL */}
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Profile Image URL
                 </label>
@@ -68,7 +76,7 @@ const Login = () => {
                   name="image"
                   className="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
                 />
-              </div>
+              </div> */}
 
               {/* Email */}
               <div>
@@ -118,12 +126,15 @@ const Login = () => {
 
             {/* Social Login */}
             <div className="space-y-3">
-              <button className="w-full py-3 border rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition font-medium">
-                Continue with Email
+              <button
+                onClick={handleGoogleSignIn}
+                className="w-full py-3 border rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition font-medium"
+              >
+                Continue with Google
               </button>
 
               <button className="w-full py-3 border rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition font-medium text-blue-600">
-                Continue with Facebook
+                Continue with Github
               </button>
             </div>
 
