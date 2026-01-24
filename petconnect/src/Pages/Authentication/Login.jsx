@@ -17,11 +17,12 @@ const Login = () => {
     signIn(email, pass)
       .then((result) => {
         const user = result?.user;
-        console.log(user);
+        toast.success("You have logged in successfully");
       })
       .catch((error) => {
         console.error(error.message);
         setError(error?.message);
+        toast.error(error?.message);
       });
   };
 

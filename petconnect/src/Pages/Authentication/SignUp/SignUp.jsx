@@ -26,8 +26,8 @@ const SignUp = () => {
           })
           .catch((error) => {
             // An error occured
-            toast.error("Profile updated fail");
-            console.log(error?.message);
+            toast.error(error?.message);
+            console.log();
           });
       })
       .catch((error) => {
