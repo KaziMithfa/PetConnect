@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import { useContext } from "react";
 
 const NavBar = () => {
   const { user, logOut } = useContext(AuthContext);
+  const navigate = useNavigate();
   const navLinks = (
     <>
       <li>
@@ -19,7 +20,7 @@ const NavBar = () => {
         <Link
           className="px-3 py-2 md:px-5 md:py-2 md:rounded-full md:font-semibold
                      md:hover:bg-green-500 md:text-xl md:hover:text-white transition"
-          to="/pets"
+          to="/petListings"
         >
           Pet Listing
         </Link>
@@ -104,7 +105,14 @@ const NavBar = () => {
                   <Link>DashBoard</Link>
                 </li>
                 <li>
-                  <button onClick={logOut}>Logout</button>
+                  <button
+                    onClick={async () => {
+                      await logOut();
+                      navigate("/", { replace: true });
+                    }}
+                  >
+                    Logout
+                  </button>
                 </li>
               </ul>
             </div>

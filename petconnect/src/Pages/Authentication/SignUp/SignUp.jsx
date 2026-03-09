@@ -1,13 +1,17 @@
 import React, { useContext, useState } from "react";
 
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../providers/AuthProvider";
 import toast from "react-hot-toast";
 
 const SignUp = () => {
-  const { createUser, updateUserProfile } = useContext(AuthContext);
+  const { createUser, updateUserProfile, user, setUser } =
+    useContext(AuthContext);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const form2 = location.state?.from || "/";
 
   const {
     register,
@@ -15,25 +19,40 @@ const SignUp = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    createUser(data?.email, data?.password)
-      .then((result) => {
-        const user = result?.user;
+  const onSubmit = async (data) => {
+    try {
+      const result = await createUser(data?.email, data?.password);
 
-        updateUserProfile(data?.name, data?.image)
-          .then(() => {
-            toast.success("Account created Successfully");
-          })
-          .catch((error) => {
-            // An error occured
-            toast.error(error?.message);
-            console.log();
-          });
-      })
-      .catch((error) => {
-        console.log(error?.message);
-        setError(error?.message);
+      await updateUserProfile(data?.name, data?.image);
+      setUser({
+        ...result?.user,
+        photoURL: data?.image,
+        displayName: data?.name,
       });
+      navigate(form2, { replace: true });
+      toast.success("You have been registered successfully");
+    } catch (error) {
+      toast.error(error?.message);
+    }
+
+    // createUser(data?.email, data?.password)
+    //   .then((result) => {
+    //     const user = result?.user;
+
+    //     updateUserProfile(data?.name, data?.image)
+    //       .then(() => {
+    //         toast.success("Account created Successfully");
+    //       })
+    //       .catch((error) => {
+    //         // An error occured
+    //         toast.error(error?.message);
+    //         console.log();
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error?.message);
+    //     setError(error?.message);
+    //   });
   };
 
   //console.log(watch("example")); // watch input value by passing the name of it

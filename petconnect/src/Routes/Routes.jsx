@@ -3,6 +3,8 @@ import Main from "../Layout/Main";
 import Home from "../Pages/Home/Home";
 import Login from "../Pages/Authentication/Login";
 import SignUp from "../Pages/Authentication/SignUp/SignUp";
+import PetListings from "../Pages/PetListings/PetListings";
+import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +22,15 @@ export const router = createBrowserRouter([
       {
         path: "/signUp",
         element: <SignUp></SignUp>,
+      },
+
+      {
+        path: "/petListings",
+        element: (
+          <PrivateRoute>
+            <PetListings></PetListings>
+          </PrivateRoute>
+        ),
       },
     ],
   },

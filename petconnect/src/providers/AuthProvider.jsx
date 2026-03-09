@@ -18,7 +18,7 @@ const provider = new GoogleAuthProvider();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // the function for creating user with email and password
   const createUser = (email, password) => {
@@ -76,6 +76,7 @@ const AuthProvider = ({ children }) => {
     logOut,
     updateUserProfile,
     signInwithGoogle,
+    setUser,
   };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>

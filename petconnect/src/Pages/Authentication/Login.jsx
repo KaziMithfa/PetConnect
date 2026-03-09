@@ -1,41 +1,54 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Login = () => {
   const { signIn, signInwithGoogle } = useContext(AuthContext);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleLogin = (e) => {
+  const form2 = location.state?.from || "/";
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     const form = e.target;
 
     const email = form.email.value;
     const pass = form.password.value;
 
-    signIn(email, pass)
-      .then((result) => {
-        const user = result?.user;
-        toast.success("You have logged in successfully");
-      })
-      .catch((error) => {
-        console.error(error.message);
-        setError(error?.message);
-        toast.error(error?.message);
-      });
+    try {
+      const result = await signIn(email, pass);
+      //console.log(result?.user);
+      navigate(form2, { replace: true });
+      toast.success("You have logged in successfully");
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
+  // signIn(email, pass)
+  //   .then((result) => {
+  //     const user = result?.user;
+  //     toast.success("You have logged in successfully");
+  //   })
+  //   .catch((error) => {
+  //     console.error(error.message);
+  //     setError(error?.message);
+  //     toast.error(error?.message);
+  //   });
+
   // function for handling google sign In
-  const handleGoogleSignIn = () => {
-    signInwithGoogle()
-      .then((result) => {
-        toast.success("You have logged in successfully");
-        console.log(result?.user);
-      })
-      .catch((error) => {
-        console.error(error?.message);
-      });
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInwithGoogle();
+      //console.log(result?.user);
+      toast.success("You have logged in successfully");
+      navigate(form2, { replace: true });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   // function for handling Github sign in
