@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
 
@@ -8,7 +10,7 @@ const port = process.env.port || 5000;
 const app = express();
 
 const corsOption = {
-  origin: ["http://localhost:5173/"],
+  origin: ["http://localhost:5173"],
   credentials: true,
   optionSuccessStatus: 200,
 };
@@ -16,6 +18,7 @@ const corsOption = {
 // middlewares
 app.use(cors(corsOption));
 app.use(express.json());
+app.use(cookieParser());
 
 // mongodb database connection
 
@@ -34,6 +37,54 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    // jwt generate
+    app.post("/jwt", async (req, res) => {
+      const email = req.body;
+      const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "365d",
+      });
+
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        })
+        .send({ success: true });
+    });
+
+    // clear the cookie in the server
+
+    app.get("/logout", async (req, res) => {
+      res
+        .clearCookie("token", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        })
+        .send({ success: true });
+    });
+
+    // verify token in the middleware
+
+    const verifyToken = (req, res, next) => {
+      const token = req.cookies.token;
+
+      if (!token) {
+        return res.status(401).send("Unauthorized");
+      }
+
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+          return res.status(403).send("forbidden access");
+        }
+
+        req.user = decoded;
+        next();
+      });
+    };
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -41,7 +92,7 @@ async function run() {
     );
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    //await client.close();
   }
 }
 run().catch(console.dir);

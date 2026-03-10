@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import { useContext } from "react";
+import axios from "axios";
 
 const NavBar = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -108,6 +109,9 @@ const NavBar = () => {
                   <button
                     onClick={async () => {
                       await logOut();
+                      await axios(`${import.meta.env.VITE_API_URL}/logout`, {
+                        withCredentials: true,
+                      });
                       navigate("/", { replace: true });
                     }}
                   >

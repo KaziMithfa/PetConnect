@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../providers/AuthProvider";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const SignUp = () => {
   const { createUser, updateUserProfile, user, setUser } =
@@ -30,6 +31,15 @@ const SignUp = () => {
         displayName: data?.name,
       });
       navigate(form2, { replace: true });
+
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/jwt`,
+        {
+          email: result?.user?.email,
+        },
+        { withCredentials: true },
+      );
+
       toast.success("You have been registered successfully");
     } catch (error) {
       toast.error(error?.message);
